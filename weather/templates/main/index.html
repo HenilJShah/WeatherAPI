@@ -1,0 +1,97 @@
+<!-- weather/templates/main/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .weather-container {
+            margin-top: 50px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 2s;
+        }
+        .weather-data {
+            margin-top: 20px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .btn-primary {
+            background-color: #ff5f6d;
+            border-color: #ff5f6d;
+        }
+        .btn-primary:hover {
+            background-color: #ff2d55;
+            border-color: #ff2d55;
+        }
+        .background-sunny {
+            background: linear-gradient(to right, #f9d423 0%, #ff4e50 100%);
+        }
+        .background-rain {
+            background: linear-gradient(to right, #bdc3c7 0%, #2c3e50 100%);
+        }
+        .background-wind {
+            background: linear-gradient(to right, #00c6ff 0%, #0072ff 100%);
+        }
+        .background-default {
+            background: linear-gradient(to right, #efefef 0%, #5c99ff 100%);
+
+        }
+
+    </style>
+</head>
+<body class="background-default">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 weather-container">
+                <h1 class="text-center">Weather App</h1>
+                <form method="POST" class="form-inline justify-content-center mt-4">
+                    {% csrf_token %}
+                    <input type="text" name="city" class="form-control mr-2" placeholder="Enter city">
+                    <button type="submit" class="btn btn-primary">Get Weather</button>
+                </form>
+                {% if error %}
+                    <p class="text-danger text-center mt-3">{{ error }}</p>
+                {% endif %}
+                {% if city %}
+                    <div class="weather-data text-center">
+                        <h2>Weather in {{ city }}</h2>
+                        <p>Country: {{ country }}</p>
+                        <p>Region: {{ region }}</p>
+                        <p>Temperature: {{ temperature_c }}°C / {{ temperature_f }}°F</p>
+                        <p>Condition: <span id="condition">{{ condition }}</span></p>
+                        <img src="https:{{ icon }}" alt="Weather Icon" class="img-fluid">
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const conditionElement = document.getElementById("condition");
+            if (conditionElement) {
+                const condition = conditionElement.textContent.toLowerCase();
+                const body = document.body;
+                if (condition.includes("sunny")) {
+                    body.classList.add("background-sunny");
+                } else if (condition.includes("rain")) {
+                    body.classList.add("background-rain");
+                } else if (condition.includes("wind")) {
+                    body.classList.add("background-wind");
+                } else {
+                    body.classList.add("background-default");
+                }
+            }
+        });
+    </script>
+</body>
+</html>
